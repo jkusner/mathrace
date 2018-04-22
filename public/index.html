@@ -46,7 +46,13 @@
             <div class="ui-content">
                 <h3 id="lobby-name-container"></h3>
                 <span id="player-count"></span>
-                <a href="#lobby-start" class="ui-btn" data-transition="slide" style="visibility:hidden">Start Game</a>
+                <div id="host-controls" style="display:none">
+                    <p>You are the lobby host, click start when ready.</p>
+                    <a href="#lobby-start" class="ui-btn" data-transition="slide">Start Game</a>
+                </div>
+                <div id="not-host">
+                    <p>Waiting for host to start game...</p>
+                </div>
             </div>
         </div>
     </body>

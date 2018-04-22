@@ -48,8 +48,8 @@ $(() => {
         $("#lobby-list").listview('refresh');
     });
 
-    socket.on('join response', data => {
-        console.log('Join lobby recv', data);
+    socket.on('lobby joined', data => {
+        console.log('Joined lobby', data);
 
         if (data.success) {
             curLobby = data.lobbyName;
@@ -61,14 +61,14 @@ $(() => {
 
     socket.on('lobby update', data => {
         console.log('Lobby update', data);
-        $("#player-count").text('Players: ' + data.playerCount);
+        $("#player-count").text('Players: ' + data.players);
+        
+        if (data.host) {
+            $("#host-controls").show();
+            $("#not-host").hide();
+        } else {
+            $("#host-controls").hide();
+            $("#not-host").show();
+        }
     });
-
-    function showLoading() {
-        $.mobile.loading('show');
-    }
-
-    function hideLoading() {
-        $.mobile.loading('hide');
-    }
 });

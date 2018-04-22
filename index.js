@@ -12,9 +12,6 @@ app.use(express.static('public'));
 
 let activeGames = [];
 
-let testGame = new Game('a', 'yeet', 10);
-activeGames.push(testGame);
-
 http.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
@@ -54,7 +51,6 @@ io.on('connection', socket => {
         io.emit('lobbies', activeGames.map(g => g.getState()));
         console.log('A new lobby has been created', lobbyInfo);
 
-        socket.emit('join response', {success: true, message: 'Joined', lobbyName: name, playerCount: 1, host: true});
         return reply(true, 'Lobby created');
     });
 
@@ -69,14 +65,10 @@ io.on('connection', socket => {
             return reply(false, "Game already started");
         }
 
-        if (game.players.indexOf(socket) < 0) {
+        if (!game.isPlayer(socket)) {
             game.addPlayer(socket);
         }
-
-        socket.emit('join response', {success: true, message: 'Joined', lobbyName, playerCount: game.numPlayers()});
     });
 
     socket.emit('lobbies', activeGames.map(g => g.getState()));
-
-    // TODO on disconnect, remove from game
 });
