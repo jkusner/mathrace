@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+    <head>
+        <title>MATHRACE</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+        <link rel="stylesheet" href="styles.css" />
+        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+        <script src="scripts.js"></script>
+    </head>
+    <body>
+        <div data-role="page" id="main">
+            <div data-role="header">
+                <h1>MAIN MENU</h1>
+            </div>
+            <div class="ui-content">
+                <h3>Open Lobbies</h3>
+                <ul data-role="listview" data-inset="true">
+                    <li><a href="#">Lobby 1</a></li>
+                </ul>
+                <a href="#create" class="ui-btn" data-transition="slide">Create Lobby</a>
+            </div>
+            <!-- <div data-role="footer">
+                <h4>Footer</h4>
+            </div> -->
+        </div>
+        <div data-role="page" id="create">
+            <div data-role="header" data-add-back-btn="true">
+                <h1>CREATE LOBBY</h1>
+            </div>
+            <div class="ui-content">
+                <h3>Lobby Options</h3>
+                <form action="createLobby" method="post">
+                    <label for="lobby-name">Lobby name:</label>
+                    <input type="text" name="lobby-name" id="lobby-name" value="" data-clear-btn="true">
+                    <label for="num-questions">Number of Questions</label>
+                    <input type="range" name="num-questions" id="num-questions" min="5" max="50" step="5" value="20">
+                    <input type="submit" id="btn-create-lobby" class="ui-btn" value="Create Lobby">
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
