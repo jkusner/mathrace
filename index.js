@@ -3,6 +3,8 @@ const HOST = 'localhost';
 
 const express = require('express');
 const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 
 const Game = require('./game');
 
@@ -12,13 +14,69 @@ let activeGames = [];
 
 let testGame = new Game('a', 'yeet', 10);
 activeGames.push(testGame);
-console.log(testGame.questions);
 
-app.post('/createLobby', (req, res) => {
-    console.log('Create lobby called');
-    res.end('Yo.');
+http.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+io.on('connection', socket => {
+    console.log('User connected');
+
+    socket.on('create lobby', lobbyInfo => {
+        const reply = (success, message) => socket.emit('create lobby response', {success, message});
+
+        if (!lobbyInfo || !lobbyInfo.name || !lobbyInfo.numQs) {
+            return reply(false, 'Missing information');
+        }
+
+        let name = lobbyInfo.name;
+        let numQs = Number(lobbyInfo.numQs);
+        
+        name = name.replace(/[^A-Za-z0-9_\- ]/g, '');
+        name = name.substring(0, 15);
+        name = name.trim();
+
+        if (!name) {
+            return reply(false, 'Invalid name');
+        }
+
+        if (isNaN(numQs) || numQs < 0) {
+            return reply(false, 'Invalid number of questions');
+        }
+
+        if (activeGames.filter(g => g.name == name).length > 0) {
+            return reply(false, 'Name already in use');
+        }
+
+        let g = new Game(name, socket, numQs);
+        activeGames.push(g);
+
+        io.emit('lobbies', activeGames.map(g => g.getState()));
+        console.log('A new lobby has been created', lobbyInfo);
+
+        socket.emit('join response', {success: true, message: 'Joined', lobbyName: name, playerCount: 1, host: true});
+        return reply(true, 'Lobby created');
+    });
+
+    socket.on('join request', lobbyName => {
+        const reply = (success, message) => socket.emit('join response', {success, message});
+
+        let game = activeGames.filter(g => g.name = lobbyName)[0];
+        if (!game) {
+            return reply(false, "Game not found");
+        }
+        if (game.started) {
+            return reply(false, "Game already started");
+        }
+
+        if (game.players.indexOf(socket) < 0) {
+            game.addPlayer(socket);
+        }
+
+        socket.emit('join response', {success: true, message: 'Joined', lobbyName, playerCount: game.numPlayers()});
+    });
+
+    socket.emit('lobbies', activeGames.map(g => g.getState()));
+
+    // TODO on disconnect, remove from game
 });
