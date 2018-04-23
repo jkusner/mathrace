@@ -1,8 +1,6 @@
-const OPERATIONS = ['+', '-', '*'];
+const { randInt, randChoice } = require('./random');
 
-function randInt(max) {
-    return Math.floor(Math.random() * max);
-}
+const OPERATIONS = ['+', '-', '*'];
 
 function randOperand(makeProblem=false) {
     if (makeProblem) {
@@ -12,14 +10,7 @@ function randOperand(makeProblem=false) {
 }
 
 function randOperator() {
-    return OPERATIONS[randInt(OPERATIONS.length)];
-}
-
-function sln(p) {
-    if (p instanceof Problem) {
-        return p.solution;
-    }
-    return p;
+    return randChoice(OPERATIONS);
 }
 
 class Problem {
@@ -32,8 +23,8 @@ class Problem {
         this.str = this.toString();
     }
     solve() {
-        let a = sln(this.a);
-        let b = sln(this.b);
+        let a = Problem.sln(this.a);
+        let b = Problem.sln(this.b);
 
         if (this.op === '+') {
             return a + b;
@@ -80,6 +71,12 @@ class Problem {
         let op = randOperator();
         
         return new Problem(a, b, op);
+    }
+    static sln(p) {
+        if (p instanceof Problem) {
+            return p.solution;
+        }
+        return p;
     }
 }
 
