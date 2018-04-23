@@ -7,6 +7,7 @@ $(() => {
     let lobbyList = [];
     let curLobby = null;
     let questions = null;
+    let connected = false;
 
     $('#create-lobby').submit(function () {
         let name = $("#lobby-name").val();
@@ -24,6 +25,14 @@ $(() => {
 
     $("#lobby-start").click(() => {
         socket.emit('start request');
+    });
+
+    socket.on('initial connect', () => {
+        if (connected) {
+            alert('Oh no! Connection reset!');
+            location.reload();
+        }
+        connected = true;
     });
 
     socket.on('create lobby response', data => {

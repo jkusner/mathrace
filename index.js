@@ -71,4 +71,5 @@ io.on('connection', socket => {
     });
 
     socket.emit('lobbies', activeGames.map(g => g.getState()));
+    socket.emit('initial connect');
 });
