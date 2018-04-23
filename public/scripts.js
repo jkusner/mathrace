@@ -94,7 +94,7 @@ $(() => {
         console.log('Game starting', qs);
         questions = qs;
         // TODO: have an excess amount of questions for penalty
-        numRemaining = questions.length - 1;
+        numRemaining = questions.length;
         leaderRemaining = numRemaining;
 
         console.log('Received questions', questions);
@@ -108,8 +108,13 @@ $(() => {
     });
 
     socket.on('leader progress', remaining => {
-        console.log('Leader has ' + remaining + ' questions remaining!');
+        console.log('Leader has ' + remaining + ' questions remaining! (I have ' + numRemaining+ ')');
         leaderRemaining = remaining;
+        updateLeaderStatus();
+    });
+
+    socket.on('join response', data => {
+        console.log('Join failed', data);
     });
 
     function startGameplay() {
@@ -119,7 +124,7 @@ $(() => {
     }
 
     function displayQuestion(q) {
-        $("#question-num").text(`${numRemaining} MORE TO WIN`);
+        $("#question-num").text(`${numRemaining} QUESTIONS LEFT`);
         $("#game-question").text(q.str);
         for (let i = 0; i < 4; i++) {
             $(`#game-choice-${i+1}`)
@@ -128,10 +133,14 @@ $(() => {
             .click(() => onClickedAnswer(i == q.correctIndex))
             .css('outline', i == q.correctIndex ? '1px solid green' : '');
         }
-        if (numRemaining - leaderRemaining > 1) {
-            $("#game-position").text(`You are ${numRemaining - leaderRemaining} questions behind!`);
-        } else if (numRemaining == leaderRemaining) {
+        updateLeaderStatus();
+    }
+
+    function updateLeaderStatus() {
+        if (numRemaining <= leaderRemaining) {
             $("#game-position").text(`You are in the lead!`);
+        } else if (numRemaining > leaderRemaining + 1) {
+            $("#game-position").text(`You are ${numRemaining - leaderRemaining} questions behind!`);
         } else {
             $("#game-position").text(`You are almost in the lead!`);                        
         }
@@ -139,8 +148,8 @@ $(() => {
 
     function onClickedAnswer(correct) {
         if (correct) {
-            socket.emit('question solved', { index: curQuestion, remaining: numRemaining });
-            if (numRemaining > 0) {
+            socket.emit('question solved', { index: curQuestion });
+            if (numRemaining > 1) {
                 numRemaining--;
                 curQuestion++;
                 displayQuestion(questions[curQuestion]);

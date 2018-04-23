@@ -44,7 +44,7 @@ class Game {
 
         socket.on('question solved', data => {
             if (this.started && !this.finished && this.isPlayer(socket)) {
-                this.updateLeaderProgress(socket, data.index, data.remaining);
+                this.updateLeaderProgress(socket, data.index);
             }
         });
 
@@ -96,9 +96,9 @@ class Game {
         return this.players.indexOf(socket) >= 0;
     }
 
-    updateLeaderProgress(socket, index, remaining) {
+    updateLeaderProgress(socket, index) {
         // TODO check validity of client remaining vs server records
-        this.remainingQuestions[socket.id] = remaining;
+        this.remainingQuestions[socket.id]--;
         console.log(this.remainingQuestions);
         if (!this.leader || this.remainingQuestions[socket.id] <= this.remainingQuestions[this.leader.id]) {
             this.leader = socket;
