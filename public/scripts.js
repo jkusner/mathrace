@@ -2,11 +2,11 @@ window.location.hash = '';
 
 $(() => {
     const socket = io();
-    window.socket = socket;
+    window.socket = socket; // for debug
 
     let lobbyList = [];
-
     let curLobby = null;
+    let questions = null;
 
     $('#create-lobby').submit(function () {
         let name = $("#lobby-name").val();
@@ -20,6 +20,10 @@ $(() => {
         $('#create-lobby').prop('disabled', true);
 
         return false;
+    });
+
+    $("#lobby-start").click(() => {
+        socket.emit('start request');
     });
 
     socket.on('create lobby response', data => {
@@ -70,5 +74,10 @@ $(() => {
             $("#host-controls").hide();
             $("#not-host").show();
         }
+    });
+
+    socket.on('starting', qs => {
+        console.log('Game starting', qs);
+        questions = qs;
     });
 });

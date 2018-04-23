@@ -9,6 +9,7 @@ class Game {
         this.numQs = numQs;
         this.questions = [];
         this.started = false;
+        this.finished = false;
         
         this.genQuestions();
         this.addPlayer(host);
@@ -32,6 +33,15 @@ class Game {
             host: this.host == socket
         });
 
+        socket.on('start request', () => {
+            if (socket != this.host) return;
+            this.startGame();
+        });
+
+        if (this.host == null) {
+            this.host = socket;
+        }
+
         this.broadcastUpdate();
 
         return true;
@@ -46,12 +56,26 @@ class Game {
         socket.emit('kick');
 
         if (this.host == socket) {
-            // TODO: get a new host
+            this.host = this.players[0];
+        }
+
+        if (!this.host) {
+            // TODO: This lobby is empty, kill it
         }
 
         this.broadcastUpdate();
 
         return true;
+    }
+
+    startGame() {
+        if (this.started) return false;
+
+        console.log('Starting game', this.name);
+
+        this.started = true;
+        this.broadcast('starting', this.questions);
+        this.broadcastUpdate();
     }
 
     isPlayer(socket) {
