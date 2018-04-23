@@ -1,5 +1,6 @@
 const Question = require('./question');
 
+// TODO add event handler for onGameOver(), remove game from active games list
 class Game {
     constructor(name, host, numQs) {
         this.name = name;

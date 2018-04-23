@@ -16,6 +16,10 @@ http.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
+function broadcastLobbies() {
+    io.emit('lobbies', activeGames.map(g => g.getState()).filter(g => !g.started));
+}
+
 io.on('connection', socket => {
     console.log('User connected');
 
@@ -48,9 +52,9 @@ io.on('connection', socket => {
         let g = new Game(name, socket, numQs);
         activeGames.push(g);
 
-        io.emit('lobbies', activeGames.map(g => g.getState()));
         console.log('A new lobby has been created', lobbyInfo);
 
+        broadcastLobbies();
         return reply(true, 'Lobby created');
     });
 
@@ -70,6 +74,8 @@ io.on('connection', socket => {
         }
     });
 
-    socket.emit('lobbies', activeGames.map(g => g.getState()));
+    broadcastLobbies();
     socket.emit('initial connect');
 });
+
+setInterval(broadcastLobbies, 5000);
