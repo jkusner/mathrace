@@ -67,6 +67,12 @@ $(() => {
         }
 
         $("#lobby-list").listview('refresh');
+
+        if (lobbies.length == 0) {
+            $("#no-open-lobbies").show();
+        } else {
+            $("#no-open-lobbies").hide();
+        }
     });
 
     socket.on('lobby joined', data => {
