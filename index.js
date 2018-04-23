@@ -69,9 +69,10 @@ io.on('connection', socket => {
             return reply(false, "Game already started");
         }
 
-        if (!game.isPlayer(socket)) {
-            game.addPlayer(socket);
+        if (game.isPlayer(socket)) {
+            game.removePlayer(socket);
         }
+        game.addPlayer(socket);
     });
 
     broadcastLobbies();
