@@ -53,8 +53,6 @@ class Question {
         let choices = makeFakeAnswers(prob);
         choices.splice(correctIndex, 0, correctAnswer);
 
-        console.log(prob.str, choices, correctIndex);
-
         return new Question(prob.str, choices, correctIndex);
     }
 }
