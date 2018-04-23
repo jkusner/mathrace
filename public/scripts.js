@@ -99,5 +99,11 @@ $(() => {
 
     function startGameplay() {
         $.mobile.changePage('#gameplay', {transition: 'flow'});
+        displayQuestion(questions[0]);
+    }
+
+    function displayQuestion(q) {
+        $("#game-question").text(q.str);
+        $("#game-choice-1").text(q.ans);
     }
 });
