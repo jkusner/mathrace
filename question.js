@@ -42,7 +42,8 @@ class Question {
     getData() {
         return {
             str: this.str,
-            choices: this.choices
+            choices: this.choices,
+            correctIndex: this.correctIndex
         };
     }
     static generate() {

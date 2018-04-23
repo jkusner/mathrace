@@ -6,8 +6,11 @@ $(() => {
 
     let lobbyList = [];
     let curLobby = null;
-    let questions = null;
     let connected = false;
+    
+    let questions = null;
+    let numRemaining = 0;
+    let curQuestion = 0;
 
     $('#create-lobby').submit(function () {
         let name = $("#lobby-name").val();
@@ -88,6 +91,10 @@ $(() => {
     socket.on('starting', qs => {
         console.log('Game starting', qs);
         questions = qs;
+        // TODO: have an excess amount of questions for penalty
+        numRemaining = questions.length - 1;
+
+        console.log('Received questions', questions);
 
         $.mobile.changePage('#starting', {transition: 'flip'});
 
@@ -99,13 +106,33 @@ $(() => {
 
     function startGameplay() {
         $.mobile.changePage('#gameplay', {transition: 'flow'});
-        displayQuestion(questions[0]);
+        curQuestion = 0;
+        displayQuestion(questions[curQuestion]);
     }
 
     function displayQuestion(q) {
+        $("#question-num").text(`Q ${curQuestion + 1} of ${questions.length}`);
         $("#game-question").text(q.str);
         for (let i = 0; i < 4; i++) {
-            $(`#game-choice-${i+1}`).text(q.choices[i]);
+            $(`#game-choice-${i+1}`)
+                .text(q.choices[i])
+                .off('click')
+                .click(() => onClickedAnswer(i == q.correctIndex))
+                .css('outline', i == q.correctIndex ? '1px solid green' : '');
+        }
+    }
+
+    function onClickedAnswer(correct) {
+        if (correct) {
+            if (numRemaining > 0) {
+                numRemaining--;
+                curQuestion++;
+                displayQuestion(questions[curQuestion]);
+            } else {
+                alert('Out of questions!');
+            }
+        } else {
+            // TODO: penalty
         }
     }
 });
