@@ -79,5 +79,16 @@ $(() => {
     socket.on('starting', qs => {
         console.log('Game starting', qs);
         questions = qs;
+
+        $.mobile.changePage('#starting', {transition: 'flip'});
+
+        $("#starting-countdown").text('3');
+        setTimeout(() => $("#starting-countdown").text('2'), 1000);
+        setTimeout(() => $("#starting-countdown").text('1'), 2000);
+        setTimeout(startGameplay, 3000);
     });
+
+    function startGameplay() {
+        $.mobile.changePage('#gameplay', {transition: 'flow'});
+    }
 });
