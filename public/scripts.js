@@ -155,9 +155,13 @@ $(() => {
                 displayQuestion(questions[curQuestion]);
             } else {
                 alert('Out of questions!');
+                // TODO win
             }
         } else {
-            // TODO: penalty
+            socket.emit('question wrong', { index: curQuestion });
+            numRemaining++;
+            curQuestion++;
+            displayQuestion(questions[curQuestion]);
         }
     }
 });
