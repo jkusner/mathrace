@@ -90,12 +90,12 @@ $(() => {
         }
     });
 
-    socket.on('starting', qs => {
-        console.log('Game starting', qs);
-        questions = qs;
+    socket.on('starting', data => {
+        console.log('Game starting', data.questions);
+        questions = data.questions;
         // TODO: have an excess amount of questions for penalty
-        numRemaining = questions.length;
-        leaderRemaining = numRemaining;
+        numRemaining = data.numQs;
+        leaderRemaining = data.numQs;
 
         console.log('Received questions', questions);
 

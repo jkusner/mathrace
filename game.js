@@ -7,6 +7,7 @@ class Game {
         this.host = host;
         this.players = [];
         this.remainingQuestions = {};
+        // Due to penalties, numQs != this.questions.length!
         this.numQs = numQs;
         this.questions = [];
         this.clientQuestions = [];
@@ -14,7 +15,6 @@ class Game {
         this.finished = false;
 
         this.leader = null;
-        
         
         this.genQuestions();
         this.addPlayer(host);
@@ -88,7 +88,7 @@ class Game {
         }
 
         this.started = true;
-        this.broadcast('starting', this.clientQuestions);
+        this.broadcast('starting', {questions: this.clientQuestions, numQs: this.numQs });
         this.broadcastUpdate();
     }
 
@@ -121,7 +121,7 @@ class Game {
     }
 
     genQuestions() {
-        for (let i = 0; i < this.numQs; i++) {
+        for (let i = 0; i < this.numQs * 10; i++) {
             this.questions.push(Question.generate());
         }
         this.clientQuestions = this.questions.map(q => q.getData());
