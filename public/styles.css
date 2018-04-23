@@ -13,6 +13,6 @@
 }
 */
 
-#game-question, #game-position {
+#game-question, #game-position, .centered {
     text-align: center;
 }

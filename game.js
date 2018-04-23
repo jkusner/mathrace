@@ -106,7 +106,12 @@ class Game {
 
     onQuestionCorrect(socket, index) {
         this.remainingQuestions[socket.id]--;
-        
+
+        if (this.remainingQuestions[socket.id] === 0) {
+            this.winGame(socket);
+            return;
+        }
+
         if (!this.leader || this.remainingQuestions[socket.id] <= this.remainingQuestions[this.leader.id]) {
             this.leader = socket;
             this.broadcast('leader progress', this.remainingQuestions[this.leader.id]);
@@ -131,6 +136,27 @@ class Game {
 
             this.broadcast('leader progress', this.remainingQuestions[this.leader.id]);
         }
+    }
+
+    winGame(socket) {
+        if (!this.started || this.finished) return;
+
+        this.winner = socket;
+        console.log(`User ${this.winner.id} won game ${this.name}`);
+
+        this.endGame();
+    }
+
+    endGame() {
+        console.log(`Game ${this.name} ended!`);
+
+        this.finished = true;
+
+        for (let player of this.players) {
+            player.emit('game over', { winner: this.winner == player });
+        }
+
+        // TODO callback somewhere to get this game removed from game list
     }
 
     broadcast(msg, data) {

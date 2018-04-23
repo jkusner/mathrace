@@ -32,6 +32,9 @@ $(() => {
         socket.emit('start request');
     });
 
+    $("#loser-reload").click(() => location.reload());
+    $("#winner-reload").click(() => location.reload());
+
     socket.on('initial connect', () => {
         if (connected) {
             alert('Oh no! Connection reset!');
@@ -108,13 +111,32 @@ $(() => {
     });
 
     socket.on('leader progress', remaining => {
-        console.log('Leader has ' + remaining + ' questions remaining! (I have ' + numRemaining+ ')');
+        console.log('Leader has ' + remaining + ' questions remaining!');
         leaderRemaining = remaining;
         updateLeaderStatus();
     });
 
     socket.on('join response', data => {
         console.log('Join failed', data);
+    });
+
+    socket.on('game over', data => {
+        console.log('Game over. Winner:', data.winner);
+
+        let lossAmount = numRemaining - leaderRemaining + 1;
+
+        curLobby = null;
+        questions = null;
+        numRemaining = 0;
+        curQuestion = 0;
+        leaderRemaining = 9999;
+
+        if (data.winner) {
+            $.mobile.changePage('#winner', {transition: 'flow'});
+        } else {
+            $.mobile.changePage('#loser', {transition: 'flow'});
+            $("#loss-amount").text(lossAmount);
+        }
     });
 
     function startGameplay() {
@@ -153,9 +175,6 @@ $(() => {
                 numRemaining--;
                 curQuestion++;
                 displayQuestion(questions[curQuestion]);
-            } else {
-                alert('Out of questions!');
-                // TODO win
             }
         } else {
             socket.emit('question wrong', { index: curQuestion });
