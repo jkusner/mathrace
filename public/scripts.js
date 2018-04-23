@@ -12,6 +12,8 @@ $(() => {
     let numRemaining = 0;
     let curQuestion = 0;
 
+    let leaderRemaining = 9999;
+
     $('#create-lobby').submit(function () {
         let name = $("#lobby-name").val();
         let numQs = $("#num-questions").val();
@@ -93,6 +95,7 @@ $(() => {
         questions = qs;
         // TODO: have an excess amount of questions for penalty
         numRemaining = questions.length - 1;
+        leaderRemaining = numRemaining;
 
         console.log('Received questions', questions);
 
@@ -106,6 +109,7 @@ $(() => {
 
     socket.on('leader progress', remaining => {
         console.log('Leader has ' + remaining + ' questions remaining!');
+        leaderRemaining = remaining;
     });
 
     function startGameplay() {
@@ -115,14 +119,21 @@ $(() => {
     }
 
     function displayQuestion(q) {
-        $("#question-num").text(`Q ${curQuestion + 1} of ${questions.length}`);
+        $("#question-num").text(`${numRemaining} MORE TO WIN`);
         $("#game-question").text(q.str);
         for (let i = 0; i < 4; i++) {
             $(`#game-choice-${i+1}`)
-                .text(q.choices[i])
-                .off('click')
-                .click(() => onClickedAnswer(i == q.correctIndex))
-                .css('outline', i == q.correctIndex ? '1px solid green' : '');
+            .text(q.choices[i])
+            .off('click')
+            .click(() => onClickedAnswer(i == q.correctIndex))
+            .css('outline', i == q.correctIndex ? '1px solid green' : '');
+        }
+        if (numRemaining - leaderRemaining > 1) {
+            $("#game-position").text(`You are ${numRemaining - leaderRemaining} questions behind!`);
+        } else if (numRemaining == leaderRemaining) {
+            $("#game-position").text(`You are in the lead!`);
+        } else {
+            $("#game-position").text(`You are almost in the lead!`);                        
         }
     }
 
