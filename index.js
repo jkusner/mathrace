@@ -61,7 +61,9 @@ io.on('connection', socket => {
     socket.on('join request', lobbyName => {
         const reply = (success, message) => socket.emit('join response', {success, message});
 
-        let game = activeGames.filter(g => g.name = lobbyName)[0];
+        console.log(`Incoming join request from ${socket.id}, lobby: ${lobbyName}`);
+
+        let game = activeGames.filter(g => g.name == lobbyName)[0];
         if (!game) {
             return reply(false, "Game not found");
         }
