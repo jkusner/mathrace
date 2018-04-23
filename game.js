@@ -6,12 +6,15 @@ class Game {
         this.name = name;
         this.host = host;
         this.players = [];
-        this.scores = {};
+        this.remainingQuestions = {};
         this.numQs = numQs;
         this.questions = [];
         this.clientQuestions = [];
         this.started = false;
         this.finished = false;
+
+        this.leader = null;
+        
         
         this.genQuestions();
         this.addPlayer(host);
@@ -21,7 +24,6 @@ class Game {
         if (this.started) return false;
 
         this.players.push(socket);
-        this.scores[socket] = 0;
 
         socket.on('disconnect', () => {
             this.removePlayer(socket);
@@ -38,6 +40,12 @@ class Game {
         socket.on('start request', () => {
             if (socket != this.host) return;
             this.startGame();
+        });
+
+        socket.on('question solved', data => {
+            if (this.started && !this.finished && this.isPlayer(socket)) {
+                this.updateLeaderProgress(socket, data.index, data.remaining);
+            }
         });
 
         if (this.host == null) {
@@ -75,6 +83,10 @@ class Game {
 
         console.log('Starting game', this.name);
 
+        for (let socket of this.players) {
+            this.remainingQuestions[socket.id] = this.numQs;
+        }
+
         this.started = true;
         this.broadcast('starting', this.clientQuestions);
         this.broadcastUpdate();
@@ -82,6 +94,16 @@ class Game {
 
     isPlayer(socket) {
         return this.players.indexOf(socket) >= 0;
+    }
+
+    updateLeaderProgress(socket, index, remaining) {
+        // TODO check validity of client remaining vs server records
+        this.remainingQuestions[socket.id] = remaining;
+        console.log(this.remainingQuestions);
+        if (!this.leader || this.remainingQuestions[socket.id] <= this.remainingQuestions[this.leader.id]) {
+            this.leader = socket;
+            this.broadcast('leader progress', this.remainingQuestions[this.leader.id]);
+        }
     }
 
     broadcast(msg, data) {

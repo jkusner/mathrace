@@ -104,6 +104,10 @@ $(() => {
         setTimeout(startGameplay, 3000);
     });
 
+    socket.on('leader progress', remaining => {
+        console.log('Leader has ' + remaining + ' questions remaining!');
+    });
+
     function startGameplay() {
         $.mobile.changePage('#gameplay', {transition: 'flow'});
         curQuestion = 0;
@@ -124,6 +128,7 @@ $(() => {
 
     function onClickedAnswer(correct) {
         if (correct) {
+            socket.emit('question solved', { index: curQuestion, remaining: numRemaining });
             if (numRemaining > 0) {
                 numRemaining--;
                 curQuestion++;
