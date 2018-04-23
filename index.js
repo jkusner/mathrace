@@ -21,7 +21,7 @@ function broadcastLobbies() {
 }
 
 io.on('connection', socket => {
-    console.log('User connected');
+    console.log(`User ${socket.id} connected`);
 
     socket.on('create lobby', lobbyInfo => {
         const reply = (success, message) => socket.emit('create lobby response', {success, message});

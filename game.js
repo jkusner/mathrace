@@ -58,6 +58,8 @@ class Game {
             this.host = socket;
         }
 
+        console.log(`User ${socket.id} joined game ${this.name}`);
+
         this.broadcastUpdate();
 
         return true;
@@ -68,7 +70,7 @@ class Game {
         if (i < 0) return false;
         this.players.splice(i, 1);
 
-        console.log('User left game');
+        console.log(`User ${socket.id} left game ${this.name}`);
         socket.emit('kick');
 
         if (this.host == socket) {
@@ -87,7 +89,7 @@ class Game {
     startGame() {
         if (this.started) return false;
 
-        console.log('Starting game', this.name);
+        console.log(`Starting game ${this.name} with ${this.players.length} players`);
 
         for (let socket of this.players) {
             this.remainingQuestions[socket.id] = this.numQs;
@@ -104,7 +106,7 @@ class Game {
 
     onQuestionCorrect(socket, index) {
         this.remainingQuestions[socket.id]--;
-        console.log(this.remainingQuestions);
+        
         if (!this.leader || this.remainingQuestions[socket.id] <= this.remainingQuestions[this.leader.id]) {
             this.leader = socket;
             this.broadcast('leader progress', this.remainingQuestions[this.leader.id]);
@@ -113,7 +115,6 @@ class Game {
 
     onQuestionIncorrect(socket, index) { // TODO send new list of questions if they run out
         this.remainingQuestions[socket.id]++;
-        console.log(this.remainingQuestions);
 
         if (this.leader == socket) {
             let min = this.remainingQuestions[socket.id];
