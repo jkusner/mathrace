@@ -104,6 +104,8 @@ $(() => {
 
     function displayQuestion(q) {
         $("#game-question").text(q.str);
-        $("#game-choice-1").text(q.ans);
+        for (let i = 0; i < 4; i++) {
+            $(`#game-choice-${i+1}`).text(q.choices[i]);
+        }
     }
 });

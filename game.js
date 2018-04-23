@@ -8,6 +8,7 @@ class Game {
         this.scores = {};
         this.numQs = numQs;
         this.questions = [];
+        this.clientQuestions = [];
         this.started = false;
         this.finished = false;
         
@@ -74,7 +75,7 @@ class Game {
         console.log('Starting game', this.name);
 
         this.started = true;
-        this.broadcast('starting', this.questions);
+        this.broadcast('starting', this.clientQuestions);
         this.broadcastUpdate();
     }
 
@@ -100,6 +101,7 @@ class Game {
         for (let i = 0; i < this.numQs; i++) {
             this.questions.push(Question.generate());
         }
+        this.clientQuestions = this.questions.map(q => q.getData());
     }
 
     getState() {

@@ -1,59 +1,33 @@
+const Problem = require('./problem');
+
 const OPERATIONS = ['+', '-', '*'];
 
-function randInt(max) {
-    return Math.floor(Math.random() * max);
-}
-
 class Question {
-    constructor(a, b, op, ans) {
-        this.a = a;
-        this.b = b;
-        this.op = op;
-        this.ans = ans;
-        this.buildString();
+    constructor(str, choices, correctIndex) {
+        this.str = str;
+        this.choices = choices;
+        this.correctIndex = correctIndex;
     }
-    buildString() {
-        let qString = '';
-        if (this.a instanceof Question) {
-            qString += '(' + this.a.str + ')';
-        } else {
-            qString += this.a;
-        }
-
-        qString += ' ' + this.op + ' ';
-
-        if (this.b instanceof Question) {
-            qString += '(' + this.b.str + ')';
-        } else {
-            qString += this.b;
-        }
-        this.str = qString;
+    getData() {
+        return {
+            str: this.str,
+            choices: this.choices
+        };
     }
-    static generate(diff=0) {
-        let a, b;
+    static generate() {
+        let prob = Problem.generate();
+        let correctAnswer = prob.solution;
+
+        // For testing purposes, make this better of course
+        let correctIndex = 0;
+        let choices = [correctAnswer, 1111, 2222, 3333];
         
-        if (randInt(diff + 1) > 0) {
-            a = Question.generate(diff - 1);
-        } else {
-            a = randInt(20) - 10;
-        }
+        // this.answerIndex = randInt(this.options.length + 1);
 
-        b = randInt(20) - 10;
+        // this.options = fakeAnswers.slice();
+        // this.options.splice(this.answerIndex, 0, this.ans);
 
-        if (Math.random() > .5) {
-            let temp = a;
-            a = b;
-            b = temp;
-        }
-
-        let op = OPERATIONS[randInt(OPERATIONS.length)];
-        
-        let aAns = a instanceof Question ? a.ans : a;
-        let bAns = b instanceof Question ? b.ans : b;
-
-        let ans = eval(aAns + ' ' + op + ' ' + bAns);
-
-        return new Question(a, b, op, ans);
+        return new Question(prob.str, choices, correctIndex);
     }
 }
 
