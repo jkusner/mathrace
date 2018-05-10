@@ -41,12 +41,9 @@ $(() => {
         socket.emit('start request');
     });
 
-    $("#loser-reload").click(() => location.reload());
-    $("#winner-reload").click(() => location.reload());
-
     socket.on('initial connect', () => {
         if (connected) {
-            alert('Oh no! Connection reset!');
+            alert('Lost connection!');
             location.reload();
         }
         connected = true;
@@ -66,8 +63,8 @@ $(() => {
 
         if (firstLoad) {
             $.mobile.loading('hide');
-            firstLoad = false;
             $.mobile.changePage('#main');
+            firstLoad = false;
         }
 
         $("#lobby-list").empty();
@@ -234,4 +231,7 @@ $(() => {
         theme: 'z',
         html: ''
     });
+    
+    $("#loser-reload").click(() => location.reload());
+    $("#winner-reload").click(() => location.reload());
 });
