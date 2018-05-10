@@ -84,7 +84,7 @@ class Game {
             this.host = this.players[0];
         }
 
-        if (!this.host) {
+        if (!this.host && !this.finished) {
             this.endGame();
         }
 
@@ -125,7 +125,7 @@ class Game {
         }
     }
 
-    onQuestionIncorrect(socket, index) { // TODO send new list of questions if they run out
+    onQuestionIncorrect(socket, index) {
         this.remainingQuestions[socket.id]++;
 
         if (this.leader == socket) {
@@ -155,6 +155,10 @@ class Game {
     }
 
     endGame() {
+        if (this.finished) {
+            return;
+        }
+
         console.log(`Game "${this.name}" ended!`);
 
         this.finished = true;
