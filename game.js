@@ -1,3 +1,10 @@
+/*
+    John Kusner
+    jjk320@lehigh.edu
+    CSE 264
+    Final Project
+*/
+
 const Question = require('./question');
 
 class Game {
