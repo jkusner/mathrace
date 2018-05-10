@@ -33,7 +33,9 @@ class Game {
         this.players.push(socket);
 
         socket.on('disconnect', () => {
-            this.removePlayer(socket);
+            if (!this.finished) {
+                this.removePlayer(socket);
+            }
         });
 
         socket.emit('lobby joined', {
