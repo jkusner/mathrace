@@ -58,7 +58,7 @@ class Game {
             this.host = socket;
         }
 
-        console.log(`User ${socket.id} joined game ${this.name}`);
+        console.log(`User "${socket.id}" joined game "${this.name}"`);
 
         this.broadcastUpdate();
 
@@ -70,7 +70,7 @@ class Game {
         if (i < 0) return false;
         this.players.splice(i, 1);
 
-        console.log(`User ${socket.id} left game ${this.name}`);
+        console.log(`User "${socket.id}" left game "${this.name}"`);
         socket.emit('kick');
 
         if (this.host == socket) {
@@ -89,7 +89,7 @@ class Game {
     startGame() {
         if (this.started) return false;
 
-        console.log(`Starting game ${this.name} with ${this.players.length} players`);
+        console.log(`Starting game "${this.name}" with ${this.players.length} players`);
 
         for (let socket of this.players) {
             this.remainingQuestions[socket.id] = this.numQs;
@@ -142,13 +142,13 @@ class Game {
         if (!this.started || this.finished) return;
 
         this.winner = socket;
-        console.log(`User ${this.winner.id} won game ${this.name}`);
+        console.log(`User "${this.winner.id}" won game "${this.name}"`);
 
         this.endGame();
     }
 
     endGame() {
-        console.log(`Game ${this.name} ended!`);
+        console.log(`Game "${this.name}" ended!`);
 
         this.finished = true;
 

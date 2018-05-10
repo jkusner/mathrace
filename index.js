@@ -28,7 +28,7 @@ function broadcastLobbies() {
 }
 
 io.on('connection', socket => {
-    console.log(`User ${socket.id} connected`);
+    console.log(`User "${socket.id}" connected`);
 
     socket.on('create lobby', lobbyInfo => {
         const reply = (success, message) => socket.emit('create lobby response', {success, message});
@@ -58,7 +58,7 @@ io.on('connection', socket => {
 
         let g = new Game(name, socket, numQs);
         g.onGameOver(() => {
-            console.log('Removing ' + name + ' from active games list.');
+            console.log('Removing "' + name + '" from active games list.');
             games[name] = null;
         });
         games[name] = g;
@@ -72,7 +72,7 @@ io.on('connection', socket => {
     socket.on('join request', lobbyName => {
         const reply = (success, message) => socket.emit('join response', {success, message});
 
-        console.log(`Incoming join request from ${socket.id}, lobby: ${lobbyName}`);
+        console.log(`Player "${socket.id}" requested to join lobby "${lobbyName}"`);
 
         let game = games[lobbyName];
         if (!game) {
