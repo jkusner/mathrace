@@ -10,14 +10,21 @@ const Game = require('./game');
 
 app.use(express.static('public'));
 
-let activeGames = [];
+let games = {};
 
 http.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
 function broadcastLobbies() {
-    io.emit('lobbies', activeGames.map(g => g.getState()).filter(g => !g.started));
+    let openGames = [];
+    for (let name in games) {
+        let game = games[name];
+        if (game != null && !game.started && !game.finished) {
+            openGames.push(game.getState());
+        }
+    }
+    io.emit('lobbies', openGames);
 }
 
 io.on('connection', socket => {
@@ -45,12 +52,16 @@ io.on('connection', socket => {
             return reply(false, 'Invalid number of questions');
         }
 
-        if (activeGames.filter(g => g.name == name).length > 0) {
+        if (games[name]) {
             return reply(false, 'Name already in use');
         }
 
         let g = new Game(name, socket, numQs);
-        activeGames.push(g);
+        g.onGameOver(() => {
+            console.log('Removing ' + name + ' from active games list.');
+            games[name] = null;
+        });
+        games[name] = g;
 
         console.log('A new lobby has been created', lobbyInfo);
 
@@ -63,7 +74,7 @@ io.on('connection', socket => {
 
         console.log(`Incoming join request from ${socket.id}, lobby: ${lobbyName}`);
 
-        let game = activeGames.filter(g => g.name == lobbyName)[0];
+        let game = games[lobbyName];
         if (!game) {
             return reply(false, "Game not found");
         }

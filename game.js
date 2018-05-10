@@ -1,11 +1,11 @@
 const Question = require('./question');
 
-// TODO add event handler for onGameOver(), remove game from active games list
 class Game {
     constructor(name, host, numQs) {
         this.name = name;
         this.host = host;
         this.players = [];
+        this.gameOverHandlers = [];
         this.remainingQuestions = {};
         // Due to penalties, numQs != this.questions.length!
         this.numQs = numQs;
@@ -78,7 +78,7 @@ class Game {
         }
 
         if (!this.host) {
-            // TODO: This lobby is empty, kill it
+            this.endGame();
         }
 
         this.broadcastUpdate();
@@ -156,7 +156,7 @@ class Game {
             player.emit('game over', { winner: this.winner == player });
         }
 
-        // TODO callback somewhere to get this game removed from game list
+        this.gameOverHandlers.forEach(callback => callback(this.winner));
     }
 
     broadcast(msg, data) {
@@ -186,6 +186,10 @@ class Game {
 
     numPlayers() {
         return this.players.length;
+    }
+
+    onGameOver(handler) {
+        this.gameOverHandlers.push(handler);
     }
 }
 
