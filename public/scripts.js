@@ -209,4 +209,6 @@ $(() => {
             }
         }, 175);
     }
+
+    $.mobile.activeBtnClass = 'unused';
 });
