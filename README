@@ -22,3 +22,14 @@ TECHNOLOGIES USED
 - Socket.io
 - Express
 - Node.js
+
+FILE STRUCTURE
+- index.js: Main server code
+- game.js: Game code, handles players, scores, other game logic
+- problem.js: A generic math problem class and generator
+- question.js: Wraps a Problem with fake answers, these are sent to clients
+- random.js: Some random utility methods that made life a little easier
+- public/
+    - index.html: The client UI code
+    - scripts.js: The client JS code
+    - styles.css: The client stylesheet
