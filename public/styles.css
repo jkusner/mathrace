@@ -23,3 +23,8 @@
     -webkit-animation-timing-function: ease-in-out;
     -webkit-animation-duration: 200ms !important;
 }
+
+.ui-state-hover {
+    background: none;
+    border: none;
+}
