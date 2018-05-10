@@ -14,6 +14,8 @@ $(() => {
 
     let leaderRemaining = 9999;
 
+    let firstLoad = true;
+
     $('#create-lobby').submit(function () {
         let name = $("#lobby-name").val();
         let numQs = $("#num-questions").val();
@@ -54,6 +56,12 @@ $(() => {
         console.log('Lobbies updated: ', lobbies);
 
         lobbyList = lobbies;
+
+        if (firstLoad) {
+            $.mobile.loading('hide');
+            firstLoad = false;
+            $.mobile.changePage('#main');
+        }
 
         $("#lobby-list").empty();
         for (let lobby of lobbies) {
@@ -211,4 +219,11 @@ $(() => {
     }
 
     $.mobile.activeBtnClass = 'unused';
+
+    $.mobile.loading('show', {
+        text: 'Loading...',
+        textVisible: true,
+        theme: 'z',
+        html: ''
+    });
 });
