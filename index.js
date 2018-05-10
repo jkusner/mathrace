@@ -63,6 +63,7 @@ io.on('connection', socket => {
             return reply(false, 'Name already in use');
         }
 
+        removeFromAllGames(socket);
         let g = new Game(name, socket, numQs);
         g.onGameOver(() => {
             console.log('Removing "' + name + '" from active games list.');
@@ -89,17 +90,21 @@ io.on('connection', socket => {
             return reply(false, "Game already started");
         }
 
-        for (let otherGameName in games) {
-            let otherGame = games[otherGameName];
-            if (otherGame && otherGame.isPlayer(socket)) {
-                otherGame.removePlayer(socket);
-            }
-        }
+        removeFromAllGames(socket);
         game.addPlayer(socket);
     });
 
     broadcastLobbies();
     socket.emit('initial connect');
 });
+
+function removeFromAllGames(socket) {
+    for (let gameName in games) {
+        let game = games[gameName];
+        if (game && game.isPlayer(socket)) {
+            game.removePlayer(socket);
+        }
+    }
+}
 
 setInterval(broadcastLobbies, 5000);
