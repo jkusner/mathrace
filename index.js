@@ -89,8 +89,11 @@ io.on('connection', socket => {
             return reply(false, "Game already started");
         }
 
-        if (game.isPlayer(socket)) {
-            game.removePlayer(socket);
+        for (let otherGameName in games) {
+            let otherGame = games[otherGameName];
+            if (otherGame && otherGame.isPlayer(socket)) {
+                otherGame.removePlayer(socket);
+            }
         }
         game.addPlayer(socket);
     });
