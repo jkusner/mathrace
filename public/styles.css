@@ -29,6 +29,10 @@
 .in, .out {
     -webkit-animation-timing-function: ease-in-out;
     -webkit-animation-duration: 200ms !important;
+    animation-timing-function: ease-in-out;
+    animation-duration: 200ms !important;
+    -moz-animation-timing-function: ease-in-out;
+    -moz-animation-duration: 200ms !important;
 }
 
 .ui-state-hover {
