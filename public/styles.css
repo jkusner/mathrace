@@ -35,7 +35,6 @@
     -moz-animation-duration: 200ms !important;
 }
 
-.ui-state-hover {
-    background: none;
-    border: none;
+#game-choice-1:hover, #game-choice-2:hover, #game-choice-3:hover, #game-choice-4:hover {
+    background-color: #f6f6f6;
 }
