@@ -25,7 +25,6 @@ let fakeAnswerGenerators = [
     prob => prob.solution + randInt(5),
     // Subtract random number
     prob => prob.solution - randInt(5)
-    // TODO add and subtract from a and b, etc
 ];
 
 function makeFakeAnswers(prob) {
