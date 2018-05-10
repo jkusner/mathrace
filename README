@@ -1,0 +1,24 @@
+CSE264 Final Project
+"MATHRACE"
+by John Kusner
+
+DESCRIPTION
+This is a multiplayer game where players race to answer randomly generated math questions.
+Every player gets the same questions and answers, and the first player to make it through
+the set amount of questions wins the game. If a question is answered incorrectly, a
+penalty of one additional question is given to the player. This is to prevent button
+mashing and winning by luck.
+
+HOW-TO RUN
+1. $ npm install
+2. $ node index.js
+3. Go to localhost:3000 in browser
+4. Open multiple tabs (optional)
+5. Create a lobby, join the lobby in other tabs.
+6. Whoever created the lobby can start the game.
+
+TECHNOLOGIES USED
+- jQuery Mobile
+- Socket.io
+- Express
+- Node.js
