@@ -166,6 +166,10 @@ $(() => {
     }
 
     function displayQuestion(q) {
+        if (!q) {
+            alert('Out of questions!');
+            location.reload();
+        }
         $('#gameplay').find('.ui-btn-active').removeClass('ui-btn-active ui-focus');
         $("#question-num").text(`${numRemaining} QUESTIONS LEFT`);
         $("#game-question").text(q.str);
