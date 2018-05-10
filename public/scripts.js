@@ -123,6 +123,9 @@ $(() => {
 
     socket.on('join response', data => {
         console.log('Join failed', data);
+        if (data.message) {
+            alert(data.message);
+        }
     });
 
     socket.on('game over', data => {
