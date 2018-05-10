@@ -13,7 +13,7 @@ function randOperand(makeProblem=false) {
     if (makeProblem) {
         return Problem.generate(false);
     }
-    return randInt(11) - 5;
+    return randInt(6) * (Math.random() > .8 ? -1 : 1);
 }
 
 function randOperator() {
