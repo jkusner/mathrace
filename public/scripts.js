@@ -2,7 +2,7 @@ window.location.hash = '';
 
 $(() => {
     const socket = io();
-    window.socket = socket; // for debug
+    window.socket = socket;
 
     let lobbyList = [];
     let curLobby = null;
@@ -102,7 +102,6 @@ $(() => {
     socket.on('starting', data => {
         console.log('Game starting', data.questions);
         questions = data.questions;
-        // TODO: have an excess amount of questions for penalty
         numRemaining = data.numQs;
         leaderRemaining = data.numQs;
 
@@ -157,9 +156,15 @@ $(() => {
         for (let i = 0; i < 4; i++) {
             $(`#game-choice-${i+1}`)
             .text(q.choices[i])
+            .removeClass('clicked-button')
+            .removeClass('correct-button')
             .off('click')
-            .click(() => onClickedAnswer(i == q.correctIndex))
-            .css('outline', i == q.correctIndex ? '1px solid green' : '');
+            .click(function () {
+                $(this).addClass('clicked-button');
+                $(`#game-choice-${q.correctIndex+1}`).addClass('correct-button');
+                $('.gameplay-choice').off('click');
+                onClickedAnswer(i == q.correctIndex);
+            });
         }
         updateLeaderStatus();
     }
@@ -180,13 +185,25 @@ $(() => {
             if (numRemaining > 1) {
                 numRemaining--;
                 curQuestion++;
-                displayQuestion(questions[curQuestion]);
+            } else {
+                // Game finished, server will handle this
+                return;
             }
         } else {
             socket.emit('question wrong', { index: curQuestion });
             numRemaining++;
             curQuestion++;
-            displayQuestion(questions[curQuestion]);
         }
+
+        setTimeout(() => {
+            if (questions) {
+                $.mobile.changePage('#gameplay', {transition: 'slidefade', allowSamePageTransition: true});
+                setTimeout(() => {
+                    if (questions) {
+                        displayQuestion(questions[curQuestion]);
+                    }
+                }, 100);
+            }
+        }, 175);
     }
 });

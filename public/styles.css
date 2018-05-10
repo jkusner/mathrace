@@ -7,12 +7,19 @@
     font-size: 5em;
 }
 
-/*
-.gameplay-choice {
-    TODO: button styling
-}
-*/
-
 #game-question, #game-position, .centered {
     text-align: center;
+}
+
+.clicked-button {
+    background: #ff8d8d !important;
+}
+
+.correct-button {
+    background:#44ff4a !important;
+}
+
+.in, .out {
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-duration: 200ms !important;
 }
